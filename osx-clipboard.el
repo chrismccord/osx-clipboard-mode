@@ -82,6 +82,14 @@ Consider also customizing the variable
         (setq interprogram-cut-function nil
               interprogram-paste-function nil))))
 
+(defun osx-clipboard-set-selection (type data)
+  "TYPE is a symbol: primary, secondary and clipboard."
+  (let* ((process-connection-type nil)
+         (proc (start-process "pbcopy" nil "pbcopy"
+                              "-selection" (symbol-name type))))
+    (process-send-string proc data)
+    (process-send-eof proc)))
+
 (defun osx-clipboard-cut-function (text &rest ignore)
   "Copy TEXT to the OS X clipboard using \"pbpaste\".
 
@@ -90,11 +98,12 @@ This is set as the value of `interprogram-cut-function' by
 text terminal."
   (with-temp-buffer
     (insert text)
-    (with-demoted-errors "Error calling pbcopy: %S"
-      (call-process-region (point-min) (point-max) "pbcopy"))))
+    (osx-clipboard-set-selection 'primary text)))
 
 (defvar osx-clipboard-last-selected-text nil)
 
+;; `osx-clipboard-paste-function` adapted from Daniel Neslson:
+;; Copyright (C) 2011 Daniel Nelson, based on xclip.el, by Leo Shidai Liu
 (defun osx-clipboard-paste-function ()
   "Return the value of the OS X clipboard using \"pbcopy\".
 
