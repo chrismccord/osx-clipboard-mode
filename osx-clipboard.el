@@ -82,6 +82,8 @@ Consider also customizing the variable
         (setq interprogram-cut-function nil
               interprogram-paste-function nil))))
 
+;; `osx-clipboard-set-selection` adapted from Daniel Neslson:
+;; Copyright (C) 2011 Daniel Nelson, based on xclip.el, by Leo Shidai Liu
 (defun osx-clipboard-set-selection (type data)
   "TYPE is a symbol: primary, secondary and clipboard."
   (let* ((process-connection-type nil)
@@ -102,8 +104,6 @@ text terminal."
 
 (defvar osx-clipboard-last-selected-text nil)
 
-;; `osx-clipboard-paste-function` adapted from Daniel Neslson:
-;; Copyright (C) 2011 Daniel Nelson, based on xclip.el, by Leo Shidai Liu
 (defun osx-clipboard-paste-function ()
   "Return the value of the OS X clipboard using \"pbcopy\".
 
